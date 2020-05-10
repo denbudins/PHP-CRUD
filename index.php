@@ -27,6 +27,13 @@
         <?php
             include 'config/database.php';
 
+            $action = isset($_GET['action']) ? $_GET['action'] : "";
+ 
+            // if it was redirected from delete.php
+            if($action=='deleted'){
+                echo "<div class='alert alert-success'>Record was deleted.</div>";
+            }
+
             //query for select all data
             $query = "SELECT id, name, description, price FROM products ORDER BY id";
             $stmt = $con->prepare($query);
@@ -54,7 +61,6 @@
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                         // extract row
                         extract($row);
-
                         // creating new table row per record
                         echo "<tr>";
                             echo "<td>{$id}</td>";
@@ -63,11 +69,9 @@
                             echo "<td>&#36;{$price}</td>";
                             echo "<td>";
                                 // read one record 
-                                echo "<a href='read_one.php?id={$id}' class='btn btn-info m-r-1em'>Read</a>";
-                                
+                                echo "<a href='read_one.php?id={$id}' class='btn btn-info m-r-1em'>Read</a>"; 
                                 // we will use this links on next part of this post
                                 echo "<a href='update.php?id={$id}' class='btn btn-primary m-r-1em'>Edit</a>";
-
                                 // we will use this links on next part of this post
                                 echo "<a href='#' onclick='delete_user({$id});'  class='btn btn-danger'>Delete</a>";
                             echo "</td>";
@@ -90,7 +94,18 @@
 <!-- Latest compiled and minified Bootstrap JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
  
-<!-- confirm delete record will be here -->
+<script type='text/javascript'>
+// confirm record deletion
+function delete_user( id ){
+     
+    var answer = confirm('Are you sure?');
+    if (answer){
+        // if user clicked ok, 
+        // pass the id to delete.php and execute the delete query
+        window.location = 'delete.php?id=' + id;
+    } 
+}
+</script>
  
 </body>
 </html>
